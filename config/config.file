@@ -1,0 +1,80 @@
+server    
+{                           
+    listen     127.0.0.1:8080
+    server_name    Reshe
+    client_max_body_size 565454555
+    error_page 400 ../errors/400.html
+    error_page 404 ../errors/404.html
+    error_page 700 ../errors/500.html 
+    error_page 800 ../errors/400.html
+    error_page 100 ../errors/404.html
+    error_page 300 ../errors/500.html
+    root /Users/lelbakna/Desktop/webservteam/
+    index index.html
+    location /planet/2/3
+    {
+        allow_methods GET POST DELETE
+        redirect http://www.google.com/
+        autoindex on
+        root GET_files
+        index life.html
+        accept_cgi java script
+    }
+    location /planet/2/3/4
+    {
+        allow_methods GET POST DELETE
+        redirect http://www.google.com/ 
+        autoindex on
+        root GET_files
+        index life.html
+        accept_cgi java script
+    }
+    location /planet
+    {
+        allow_methods GET POST DELETE
+        redirect http://www.google.com/ 
+        autoindex on 
+        root GET_files
+        index life.html
+        accept_cgi java script
+    }
+    location /
+    {
+        allow_methods GET POST DELETE
+        redirect https://www.tooplate.com/live/2097_pop
+        autoindex off
+        root GET_files
+        index life.html
+        accept_cgi java script
+    }
+}
+
+server    
+{                           
+    listen     127.0.0.1:8081
+    server_name    Reshe
+    client_max_body_size 565454555
+    error_page 400 ../errors/400.html
+    error_page 404 ../errors/404.html
+    error_page 700 ../errors/500.html 
+    error_page 800 ../errors/400.html
+    error_page 100 ../errors/404.html
+    error_page 300 ../errors/500.html
+    root allah.com
+    index index.html
+    location /
+    {
+        allow_methods GET POST DELETE
+        autoindex on
+        root GET_files
+        index indexf.html
+        accept_cgi java script
+    }
+    location /GET_files
+    {
+        allow_methods GET POST DELETE
+        autoindex on
+        root GET_files
+        accept_cgi java script
+    }
+}
