@@ -1,5 +1,5 @@
-server    
-{                           
+server
+{
     listen     127.0.0.1:8080
     server_name    Reshe
     client_max_body_size 565454555
@@ -16,9 +16,11 @@ server
         allow_methods GET POST DELETE
         redirect http://www.google.com/
         autoindex on
-        root GET_files
+        root webservteam
         index life.html
-        accept_cgi java script
+        upload_pass /upload
+        cgi_php fullpathofcgiphp
+        cgi_py fullpathofcgipython
     }
     location /planet/2/3/4
     {
@@ -27,30 +29,32 @@ server
         autoindex on
         root GET_files
         index life.html
-        accept_cgi java script
+        upload_pass /Users/lelbakna/Desktop/webservteam/upload
+        cgi_php fullpathofcgiphp
+        cgi_py fullpathofcgipython
     }
     location /planet
     {
         allow_methods GET POST DELETE
-        redirect http://www.google.com/ 
+        redirect https://www.tooplate.com/live/2097_pop
         autoindex on 
         root GET_files
         index life.html
-        accept_cgi java script
+        upload_pass /upload
+        cgi_py fullpathofcgipython
     }
     location /
     {
         allow_methods GET POST DELETE
-        redirect https://www.tooplate.com/live/2097_pop
-        autoindex off
+        autoindex on
         root GET_files
-        index life.html
-        accept_cgi java script
+        upload_pass GET_files/upload
+        index lifxe.html
+        cgi_py fullpathofcgipython
     }
 }
-
-server    
-{                           
+server
+{
     listen     127.0.0.1:8081
     server_name    Reshe
     client_max_body_size 565454555
@@ -67,14 +71,24 @@ server
         allow_methods GET POST DELETE
         autoindex on
         root GET_files
-        index indexf.html
-        accept_cgi java script
+        upload_pass /upload
+        index index.html
+        cgi_py java
     }
     location /GET_files
     {
         allow_methods GET POST DELETE
         autoindex on
+        upload_pass GET_files/upload
         root GET_files
-        accept_cgi java script
+        cgi_php fullpathofcgipython
+    }
+    location /GET_files/life.html
+    {
+        allow_methods GET POST DELETE
+        autoindex on
+        root GET_files
+        upload_pass /upload
+        cgi_py fullpathofcgipython
     }
 }

@@ -6,7 +6,7 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 01:16:10 by rmoujan           #+#    #+#             */
-/*   Updated: 2023/04/12 12:57:22 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/04/26 19:33:24 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,7 @@ void error_page_directive(std::string error, std::map<int, std::string>		&error_
 	if (data.compare("error_page"))
 	{
 		ft_errnoo(2);
-	}
-		
+	}	
 	while (( in >> data))
 	{
 		std::stringstream object;
@@ -168,6 +167,7 @@ int rbrace_check(std::string data)
 int lbrace_check(std::string data)
 {
 	int i = 0;
+
 	while (data[i])
 	{
 		if (data[i] != '}' && data[i] != ' ')
@@ -201,6 +201,7 @@ void location_name(Server *obj, std::string name)
 		obj->setLocationName(data);
 		i++;
 	}
+	
 	if (i != 1)
 		ft_errnoo(2);
 }
@@ -208,12 +209,13 @@ void location_name(Server *obj, std::string name)
 Location* location_directive(std::ifstream &infile, Server *obj, std::string name)
 {
 	std::string data;
+	Location *loc;
 	location_name(obj, name);
 	getline(infile, data);
 	
 	if (data.find("{")  != (std::string::npos) && rbrace_check(data))
 	{
-		Location *loc = newLocation();
+		loc = newLocation();
 		while (getline(infile, data) && lbrace_check(data) == 0)
 		{
 			if (data.find("allow_methods") != (std::string::npos))
@@ -236,9 +238,22 @@ Location* location_directive(std::ifstream &infile, Server *obj, std::string nam
 			{
 				index_location(loc, data);
 			}
-			else if (data.find("accept_cgi")  != (std::string::npos))
+			else if (data.find("cgi_php")  != (std::string::npos))
 			{
-				directive_accept_cgi(loc, data);
+				// directive_accept_cgi(loc, data);
+				 directive_cgi_php(loc,data);
+			}
+			else if (data.find("cgi_py")  != (std::string::npos))
+			{
+				// directive_accept_cgi(loc, data);
+				 directive_cgi_py(loc,data);
+
+			}
+			else if (data.find("upload_pass")  != (std::string::npos))
+			{
+				// directive_accept_cgi(loc, data);
+				 directive_upload(loc,data);
+
 			}
 			else if (!data.empty())
 			{
@@ -249,11 +264,10 @@ Location* location_directive(std::ifstream &infile, Server *obj, std::string nam
 		{
 			ft_errnoo(2);
 		}
-		return (loc);
 	}
 	else
 	{
 		ft_errnoo(2);
 	}
-	return NULL;
+	return (loc);
 }

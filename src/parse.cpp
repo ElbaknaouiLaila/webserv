@@ -6,7 +6,7 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 20:36:45 by rmoujan           #+#    #+#             */
-/*   Updated: 2023/04/12 12:59:02 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/04/26 19:31:45 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,30 +20,43 @@ Server* newServer()
 
 void skipe_empty_lines(std::ifstream &infile, std::string &data)
 {
+	if (infile.eof())
+		ft_errnoo(6);
 	while (data.empty() || skipe_whitespace_all(data))
 	{
-		std::cout <<"<"<<data<<">"<<std::endl;
+		if (infile.eof())
+			ft_errnoo(6);
 		getline(infile, data);
 	}
 }
+// void check_empty_server(std::ifstream infile)
+// {
+// 	std::string	data;
+// 	getline(infile, data);
+// 	std::cout <<"From checking empty servers "<<data<<std::endl;
+// 	if (data.find('}') == (std::string::npos))
+// 	{
+// 		ft_errnoo(2);
+// 	}
+// }
 
 Server * get_data_of_server(std::ifstream &infile)
 {
-	std::string							data;
-	std::map<int, std::string>			error_page;
 	std::map<std::string, Location*>	content_location;
+	std::map<int, std::string>			error_page;
+	std::string							data;
 	Server								*obj;
 	Location							*loc;
 
 	getline(infile, data);
 	skipe_empty_lines(infile, data);
-	// std::cout <<"<"<<data<<">"<<std::endl;
+	std::cout <<"data is |"<<data<<"|"<<std::endl;
 	if (data.find("{") != (std::string::npos) && rbrace_check(data))
 	{
+		std::cout <<"data is "<<std::endl;
 		obj = newServer();
-		while (getline(infile, data) && lbrace_check(data) == 0)//khas condition tegad (mzl mamfixiyash mzn)
+		while (getline(infile, data) && lbrace_check(data) == 0)
 		{
-			// std::cout <<"data ("<<data<<")"<<std::endl;
 			if (data.find("listen") != (std::string::npos))
 			{
 				listen_directive(data, obj);
@@ -71,12 +84,12 @@ Server * get_data_of_server(std::ifstream &infile)
 			else if (data.find("location")  != (std::string::npos))
 			{
 				loc = location_directive(infile, obj, data);
+				check_duplicate_locations(obj->getLocationName(), content_location);
 				content_location.insert(std::pair<std::string, Location*>(obj->getLocationName(), loc));
-				// std::cout <<"data loc |"<<data<<"|"<<std::endl;
+
 			}
 			else if (!data.empty())
 			{
-				std::cout <<"9"<<std::endl;	
 				ft_errnoo(2);
 			}
 		}
@@ -85,16 +98,12 @@ Server * get_data_of_server(std::ifstream &infile)
 	{
 		ft_errnoo(2);
 	}
-	// skipe_empty_lines(infile, data);
-	// std::cout <<"TEST"<<std::endl;
-	if(!lbrace_check(data))
+	if(!lbrace_check(data) || data.empty())
 	{
-		std::cout <<"APPLE |"<<data<<"|"<<std::endl;
 		ft_errnoo(2);
 	}
 	obj->setErrorPage(error_page);
 	obj->setContent(content_location);
-	// std::cout <<"WELT |"<<data<<"|"<<std::endl;
 	return (obj);
 }
 
@@ -104,7 +113,10 @@ int skipe_whitespace_server(std::string data)
 	while (data[i])
 	{
 		if (data[i] != ' ')
+		{
+			std::cout <<"server check "<<std::endl;
 			break;
+		}
 		i++;
 	}
 	if (data[i] != 's')
@@ -130,13 +142,12 @@ void get_servers(char *filee, std::vector<Server *> &servers)
 {
 	std::ifstream infile;
 	std::string	  data;
-	// myhelp flag;
+
 	infile.open(filee);
 	while (getline(infile, data))
 	{
-		if (data.find("server") != (std::string::npos) && skipe_whitespace_server(data))
+		if (data.compare("server") == 0)
 		{
-			//std::cout <<"1"<<std::endl;
 			servers.push_back(get_data_of_server(infile));
 		}
 		else if (!data.empty() && skipe_whitespace_all(data) == 0)

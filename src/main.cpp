@@ -6,7 +6,7 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 11:23:15 by mmanouze          #+#    #+#             */
-/*   Updated: 2023/04/16 14:20:24 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/04/26 19:50:41 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void output_servers(std::vector<Server *> servers)
 	std::vector<std::string>::iterator	cg;
 	std::vector<std::string>	ways;
 	std::vector<std::string>::iterator	wy;
+	
 	std::cout <<"\n\n\n\n\n"<<std::endl;
 	for (it = servers.begin(); it != servers.end(); it++)
 	{
@@ -52,13 +53,15 @@ void output_servers(std::vector<Server *> servers)
 				std::cout <<"* Autoindex is 					:"<<(loc->second)->getAutoIndex()<<"."<<std::endl;
 				std::cout <<"* ROOT is 					:"<<(loc->second)->getRoot()<<"."<<std::endl;
 				std::cout <<"* INDEX is 					:"<<(loc->second)->getIndex()<<"."<<std::endl;
-				cgi = (loc->second)->getCgi();
-				std::cout <<"------CGI are---------"<<std::endl;
-				for (cg = cgi.begin(); cg != cgi.end(); cg++)
-				{
-					std::cout <<"* "<<(*cg)<<". ";
-				}
-				
+				// cgi = (loc->second)->getCgi();
+				// std::cout <<"------CGI are---------"<<std::endl;
+				// for (cg = cgi.begin(); cg != cgi.end(); cg++)
+				// {
+				// 	std::cout <<"* "<<(*cg)<<". ";
+				// }
+				std::cout <<"* CGI_PHP is 					:"<<(loc->second)->getCgiPhp()<<"."<<std::endl;
+				std::cout <<"* CGI_PYTHON is 					:"<<(loc->second)->getCgiPy()<<"."<<std::endl;
+				std::cout <<"* UPLOAD is 					:"<<(loc->second)->getUpload()<<"."<<std::endl;
 				std::cout <<"\n------ALLOWED METHODS ARE---------"<<std::endl;
 				ways = (loc->second)->getAllowedMethods();
 				for (wy = ways.begin(); wy != ways.end(); wy++)
@@ -69,6 +72,7 @@ void output_servers(std::vector<Server *> servers)
 				i++;
 			}
 	}
+
 }
 
 

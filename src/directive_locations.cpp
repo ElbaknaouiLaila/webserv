@@ -6,7 +6,7 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 02:17:14 by rmoujan           #+#    #+#             */
-/*   Updated: 2023/04/12 12:57:15 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/04/26 19:34:03 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 void directive_allow_methods(Location *loc, std::string methods)
 {
-	std::vector<std::string>	allowed_ways;
+	std::vector<std::string>			allowed_ways;
 	std::vector<std::string>::iterator	it;
 	std::string		data;
 	int number;
@@ -74,6 +74,7 @@ void directive_autoindex(Location *loc, std::string autoindex)
 	while (( in >> data))
 	{
 		loc->setAutoIndex(data);
+
 		i++;
 	}
 	if (i != 1)
@@ -117,71 +118,82 @@ void index_location(Location *loc, std::string index)
 }
 
 
-void directive_accept_cgi(Location *loc, std::string cgi_name)
+// void directive_accept_cgi(Location *loc, std::string cgi_name)
+// {
+// 	std::vector<std::string>			cgi;
+// 	std::vector<std::string>::iterator	it;
+// 	std::string		data;
+// 	int number;
+// 	int i = 0;
+
+// 	std::stringstream in(cgi_name);
+//  	in >> data;
+// 	if (data.compare("accept_cgi"))
+// 	{
+// 		ft_errnoo(2);
+// 	}	
+// 	while (( in >> data))
+// 	{
+// 		cgi.push_back(data);
+// 		i++;
+// 	}
+// 	if (i ==  0)
+// 	{
+// 		ft_errnoo(2);
+// 	}
+// 	loc->setCgi(cgi);
+// }
+
+void directive_cgi_php(Location *loc, std::string cgi_name)
 {
-	std::vector<std::string>	cgi;
-	std::vector<std::string>::iterator	it;
 	std::string		data;
-	int number;
 	int i = 0;
 
 	std::stringstream in(cgi_name);
  	in >> data;
-	if (data.compare("accept_cgi"))
-	{
+	if (data.compare("cgi_php"))
 		ft_errnoo(2);
-	}	
 	while (( in >> data))
 	{
-		cgi.push_back(data);
+		loc->setCgiPhp(data);
 		i++;
 	}
-	if (i ==  0)
-	{
+	if (i != 1)
 		ft_errnoo(2);
-	}
-	loc->setCgi(cgi);
 }
 
+void directive_cgi_py(Location *loc, std::string cgi_name)
+{
+	std::string		data;
+	int i = 0;
 
-// server    
-// {                                                                                         
-//     listen     localhost:8080
-//     server_name    Reshe
-//     client_max_body_size 100
-//     error_page 400 ../errors/400.html
-//     error_page 404 ../errors/404.html
-//     error_page 700 ../errors/500.html 
-//     error_page 800 ../errors/400.html
-//     error_page 100 ../errors/404.html
-//     error_page 300 ../errors/500.html
-//     root allah.com
-//     index index.html
-//     location name1
-//     {     
-//         allow_methods GET POST DELETE 
-//         redirect http://www.google.com/ 
-//         autoindex 10 
-//         root fullpath2023
-//         index life.html
-//         accept_cgi java script
-//     }
-//     location name2
-//     {     
-//         allow_methods POST 
-//         redirect http://www.youtube.com/ 
-//         autoindex 20 
-//         root fullpath2090
-//         index rima.html
-//         accept_cgi jee spring
-//     }
-//     location name3
-//     {     
-//         allow_methods DELETE 
-//         redirect http://www.facebook.com/ 
-//         autoindex 30 
-//         root fullpath7800
-//         index page.html
-//         accept_cgi .php .py
-//     }
-// }
+	std::stringstream in(cgi_name);
+ 	in >> data;
+	if (data.compare("cgi_py"))
+		ft_errnoo(2);
+	while (( in >> data))
+	{
+		loc->setCgiPy(data);
+		i++;
+	}
+	if (i != 1)
+		ft_errnoo(2);
+}
+
+void directive_upload(Location *loc, std::string upload_name)
+{
+	std::string		data;
+	int i = 0;
+
+	std::stringstream in(upload_name);
+ 	in >> data;
+	if (data.compare("upload_pass"))
+		ft_errnoo(2);
+	while (( in >> data))
+	{
+		loc->setUpload(data);
+		i++;
+	}
+	if (i != 1)
+		ft_errnoo(2);
+}

@@ -6,7 +6,7 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 13:52:04 by mmanouze          #+#    #+#             */
-/*   Updated: 2023/04/19 00:41:47 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/04/27 22:40:49 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,12 +67,11 @@ class Client
 		std::string 	method_type;
 		std::string		StatusCode;
 		std::string		DefaultIndex;
+		std::string		cgiExtension;
 		std::fstream 	*file;
 		std::vector<Server *> ser;
 		std::string html_body_response;
 		Location*	loc;
-		
-
 	public :
 		int i ;
 		std::map<std::string, std::string> RequestHeaders;
@@ -96,7 +95,8 @@ class Client
 		bool 			get_has_request() const;
 		bool 			get_html_string() const { return (htmlString); }
 		bool 			get_has_redirection() const { return (has_rediretion); }
-
+		void 			set_cgiExtension(std::string extension) { cgiExtension = extension; }
+		std::string 	get_cgiExtension() const { return (cgiExtension); }
 		std::string 	get_status() const { return (StatusCode); }
 		std::string 	get_body() const { return (body); }
 		std::string 	get_URI()  { return (URI); }
@@ -128,13 +128,17 @@ class Client
 		void 			set_sent_size(size_t s_size);
 		void 			set_actual_size(size_t a_size);
 		void 			set_has_request(bool condition);
-		int 			error400(std::map<std::string, std::string> header_map, std::string uri);
-		int 			error413();
-		int 			error404();
-		int 			error405(std::string method);
+		int 			send400Response(std::map<std::string, std::string> header_map, std::string uri);
+		int 			send413Response();
+		int 			get_matched_location_for_request_uri();
+		int 			is_method_allowed_in_location(std::string method);
 		int 			GETUriError();
-		int 			GET_Request_Method();
+		int 			GET_Response();
+		int 			POST_Response();
 		void 			list_directory(const char* path);
+		bool			isDirectory(const char* path);
+		int 			removeDirectory(const char* path);
+		int 			removeFile(const char* filePath);
 		void 			set_URI(const std::string &set)
 		{
 			URI.clear();

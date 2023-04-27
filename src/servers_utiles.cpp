@@ -6,7 +6,7 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 15:05:19 by mmanouze          #+#    #+#             */
-/*   Updated: 2023/04/19 02:07:14 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/04/27 22:55:58 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,10 @@ void servers::full_path(Client &object)
 			object.set_URI("ErrorPage/Error301.html");
 		else if (object.get_status() == "403 Forbidden")
 			object.set_URI("ErrorPage/Error403.html");
+		else if (object.get_status() == "201 Created")
+			object.set_URI("ErrorPage/Error201.html");
+		else if (object.get_status() == "409 Conflict")
+			object.set_URI("ErrorPage/Error409.html");
 	}
 	// else if (object.get_URI() == "/")
 	// 	object.set_URI("GET_files/index.html");
