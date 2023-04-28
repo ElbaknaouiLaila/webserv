@@ -6,7 +6,7 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 13:52:04 by mmanouze          #+#    #+#             */
-/*   Updated: 2023/04/27 22:40:49 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/04/28 15:53:52 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,7 @@ class Client
 		bool			isDirectory(const char* path);
 		int 			removeDirectory(const char* path);
 		int 			removeFile(const char* filePath);
+		std::string 	find_extension(std::string filename);
 		void 			set_URI(const std::string &set)
 		{
 			URI.clear();

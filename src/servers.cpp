@@ -6,7 +6,7 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 18:11:29 by mmanouze          #+#    #+#             */
-/*   Updated: 2023/04/19 02:32:03 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/04/28 15:53:17 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,7 +181,12 @@ int servers::read_request(int newsockfd, Client &object, std::vector<Server *> s
 /////////////////////////////////////////////////////////////////////////
 
 
-
+template <typename T>
+std::string toString(T val) {
+    std::stringstream ss;
+    ss << val;
+    return ss.str();
+}
 
 void servers::send_response(int newsockfd, Client &object)
 {
@@ -209,7 +214,7 @@ void servers::send_response(int newsockfd, Client &object)
 	{
 		std::string buff = "HTTP/1.1 " + object.get_status() + "\r\n" 
 							+ "Connection: close\r\n"
-							+ "Content-Length: " +std::to_string( object.get_html_body_response().size() )+ "\r\n"
+							+ "Content-Length: " +toString( object.get_html_body_response().size() )+ "\r\n"
 							+ "Content-Type: "+ "text/html" +"\r\n"
 							+ "\r\n";
 					buff+= object.get_html_body_response();
@@ -254,7 +259,7 @@ void servers::send_response(int newsockfd, Client &object)
 		const char *ct = get_content_type(object.get_URI().c_str());
 		std::string buff = "HTTP/1.1 " + object.get_status() + "\r\n" 
 							+ "Connection: close\r\n"
-							+ "Content-Length: "+ std::to_string(cl) + "\r\n"
+							+ "Content-Length: "+ toString(cl) + "\r\n"
 							+ "Content-Type: "+ ct +"\r\n"
 							+ "\r\n";
 					buff+= object.get_html_body_response();

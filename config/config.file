@@ -71,7 +71,7 @@ server
         allow_methods GET POST DELETE
         autoindex on
         root GET_files
-        upload_pass /upload
+        upload_pass GET_files/upload
         index index.html
         cgi_py java
     }

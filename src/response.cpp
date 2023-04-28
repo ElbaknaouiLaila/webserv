@@ -25,8 +25,8 @@ int Client::send400Response(std::map<std::string, std::string> header_map, std::
 {
     std::string buff = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?#[]@!$&'()*+,;=%";
 
-    // if ((header_map.count("Content-Length") and header_map.count("Transfer-Encoding")) and Method == "POST")
-    //     return 1;
+    if (header_map.count("Content-Length") == 0 and header_map.count("Transfer-Encoding") == 0 and Method == "POST")
+        return 1;
     if(uri.find_first_not_of(buff) != std::string::npos)
         return(1);
     return 0;
@@ -235,6 +235,25 @@ int Client::removeDirectory(const char* path) {
     return rmdir(path);
 }
 
+std::string Client::find_extension(std::string filename)
+{
+    std::string extractedExtension;
+    std::size_t dotPos = filename.rfind(".");
+    if (dotPos == std::string::npos) {
+        std::cout << "File has no extension" << std::endl;
+    } else {
+        extractedExtension = filename.substr(dotPos);
+        if (loc->getCgiPhp().size() and (extractedExtension == "php")) {
+            set_cgiExtension("php");
+            return "php";
+        } else if(loc->getCgiPy().size() and (extractedExtension == "py")){
+            set_cgiExtension("py");
+            return "py";
+        }
+    }
+    return extractedExtension;
+}
+
 int Client::POST_Response()
 {
      struct stat info;
@@ -251,7 +270,10 @@ int Client::POST_Response()
         {
             if (rename(file_name.c_str(), (mv_path + file_name).c_str()) != 0)
             {
-                std::cerr << "Failed to move file."<<mv_path << std::endl;
+                std::cerr << "Failed to move file. or 404 Not Found"<<mv_path << std::endl;
+                StatusCode = "404 Not Found";
+                set_error(true);
+                set_has_request(true);
                 return 1;
             }else
             {
@@ -260,60 +282,47 @@ int Client::POST_Response()
                 StatusCode = "201 Created";
                 set_error(true);
                 set_has_request(true);
-                // return(0);
+                return(0);
             }
         }else
         {
-            StatusCode = "404 Not Found";
-            set_error(true);
-            set_has_request(true);
-            return 1;
-        }
-        if (isDirectory(URI.c_str()))
-        {
-            if (URI.back() != '/' and access((URI).c_str(), F_OK) != -1)
+            if (isDirectory(URI.c_str()))
             {
-                URI = URI + "/";
-                StatusCode = "301 Moved Permanently";
-            }
-            if (URI.back() == '/' and access((URI + "index.php").c_str(), F_OK) != -1 and loc->getCgiPhp().size() != 0)
+                if (URI.back() != '/' and access((URI).c_str(), F_OK) != -1)
+                {
+                    URI = URI + "/";
+                    StatusCode = "301 Moved Permanently";
+                }
+                if (URI.back() == '/' and find_extension(loc->getIndex()) == "php" and access((URI + loc->getIndex()).c_str(), F_OK) != -1 and loc->getCgiPhp().size() != 0)
+                {
+                    // set_cgiExtension("php");
+                    // if has index file
+                    // cgi
+                }else if (URI.back() == '/' and find_extension(loc->getIndex()) == "py" and access((URI + loc->getIndex()).c_str(), F_OK) != -1 and loc->getCgiPy().size() != 0)
+                {
+                    // set_cgiExtension("py");
+                    // cgi
+                }else
+                {
+                    StatusCode = "403 Forbidden";
+                    set_error(true);
+                    set_has_request(true);
+                    return 1;
+                }
+            }else
             {
-                set_cgiExtension("php");
-                // if has index file
-            }else if (URI.back() == '/' and access((URI + "index.py").c_str(), F_OK) != -1 and loc->getCgiPy().size() != 0)
-            {
-                set_cgiExtension("py");
-            }
-            else
-            {
-                StatusCode = "403 Forbidden";
-                set_error(true);
-                set_has_request(true);
-                return 1;
-            }
-        }else
-        {
-            // if requested file
-            if (loc->getCgiPhp().size() == 0 and loc->getCgiPy().size() == 0)
-            {
-                StatusCode = "403 Forbidden";
-                set_error(true);
-                set_has_request(true);
-                return 1;
-            }else 
-            {
-                // run cgi on request file
-                std::string filename =URI.substr(URI.rfind("/"));
-                std::size_t dotPos = filename.rfind(".");
-                if (dotPos == std::string::npos) {
-                    std::cout << "File has no extension" << std::endl;
-                } else {
-                    std::string extractedExtension = filename.substr(dotPos);
-                    if (loc->getCgiPhp().size() and (extractedExtension == "php")) {
-                        set_cgiExtension("php");
-                    } else if(loc->getCgiPy().size() and (extractedExtension == "py")){
-                        set_cgiExtension("py");
-                    }
+                // if requested file
+                if (loc->getCgiPhp().size() == 0 and loc->getCgiPy().size() == 0)
+                {
+                    StatusCode = "403 Forbidden";
+                    set_error(true);
+                    set_has_request(true);
+                    return 1;
+                }else 
+                {
+                    // run cgi on request file
+                    std::string filename =URI.substr(URI.rfind("/"));
+                    find_extension(filename);
                 }
             }
         }
