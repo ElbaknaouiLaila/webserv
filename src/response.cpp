@@ -239,6 +239,8 @@ std::string Client::find_extension(std::string filename)
 {
     std::string extractedExtension;
     std::size_t dotPos = filename.rfind(".");
+    if (filename.empty())
+        return ("");
     if (dotPos == std::string::npos) {
         std::cout << "File has no extension" << std::endl;
     } else {
@@ -259,7 +261,7 @@ int Client::POST_Response()
      struct stat info;
     std::string URI_upload;
     std::string upload_path = loc->getUpload();
-    std::string file_name = "bodyRequestCopy"+FileName();
+    std::string file_name = "bodyRequestCopy"+FileExtension();
     std::fstream   requestBody;
     requestBody.open(file_name, std::ios::out | std::ios::app | std::ios::binary);
     if (upload_path.size())
@@ -284,46 +286,49 @@ int Client::POST_Response()
                 set_has_request(true);
                 return(0);
             }
+        }
+    }else
+    {
+        if (isDirectory(URI.c_str()))
+        {
+            if (URI.back() != '/' and access((URI).c_str(), F_OK) != -1)
+            {
+                URI = URI + "/";
+                StatusCode = "301 Moved Permanently";
+            }
+            if (URI.back() == '/' and find_extension(loc->getIndex()) == "php" and access((URI + loc->getIndex()).c_str(), F_OK) != -1 and loc->getCgiPhp().size() != 0)
+            {
+                set_file_CGI_name((URI + loc->getIndex()));
+            }else if (URI.back() == '/' and find_extension(loc->getIndex()) == "py" and access((URI + loc->getIndex()).c_str(), F_OK) != -1 and loc->getCgiPy().size() != 0)
+            {
+                set_file_CGI_name((URI + loc->getIndex()));
+            }else if (URI.back() == '/' and find_extension(loc->getIndex()) == "html" and access((URI + loc->getIndex()).c_str(), F_OK) != -1)
+            {
+                URI = (URI) + (loc->getIndex());
+                set_has_request(true);
+                return(0);
+            }
+            else
+            {
+                StatusCode = "403 Forbidden";
+                set_error(true);
+                set_has_request(true);
+                return 1;
+            }
         }else
         {
-            if (isDirectory(URI.c_str()))
+            // if requested file
+            if (loc->getCgiPhp().size() == 0 and loc->getCgiPy().size() == 0)
             {
-                if (URI.back() != '/' and access((URI).c_str(), F_OK) != -1)
-                {
-                    URI = URI + "/";
-                    StatusCode = "301 Moved Permanently";
-                }
-                if (URI.back() == '/' and find_extension(loc->getIndex()) == "php" and access((URI + loc->getIndex()).c_str(), F_OK) != -1 and loc->getCgiPhp().size() != 0)
-                {
-                    // set_cgiExtension("php");
-                    // if has index file
-                    // cgi
-                }else if (URI.back() == '/' and find_extension(loc->getIndex()) == "py" and access((URI + loc->getIndex()).c_str(), F_OK) != -1 and loc->getCgiPy().size() != 0)
-                {
-                    // set_cgiExtension("py");
-                    // cgi
-                }else
-                {
-                    StatusCode = "403 Forbidden";
-                    set_error(true);
-                    set_has_request(true);
-                    return 1;
-                }
-            }else
+                StatusCode = "403 Forbidden";
+                set_error(true);
+                set_has_request(true);
+                return 1;
+            }else 
             {
-                // if requested file
-                if (loc->getCgiPhp().size() == 0 and loc->getCgiPy().size() == 0)
-                {
-                    StatusCode = "403 Forbidden";
-                    set_error(true);
-                    set_has_request(true);
-                    return 1;
-                }else 
-                {
-                    // run cgi on request file
-                    std::string filename =URI.substr(URI.rfind("/"));
-                    find_extension(filename);
-                }
+                // run cgi on request file
+                std::string filename =URI.substr(URI.rfind("/"));
+                find_extension(filename);
             }
         }
     }

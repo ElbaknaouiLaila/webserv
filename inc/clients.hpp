@@ -6,7 +6,7 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 13:52:04 by mmanouze          #+#    #+#             */
-/*   Updated: 2023/04/28 15:53:52 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/04/28 18:14:58 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ class Client
 		std::string		StatusCode;
 		std::string		DefaultIndex;
 		std::string		cgiExtension;
+		std::string 	file_CGI_name;
 		std::fstream 	*file;
 		std::vector<Server *> ser;
 		std::string html_body_response;
@@ -77,6 +78,8 @@ class Client
 		std::map<std::string, std::string> RequestHeaders;
 		Client();
 		~Client();
+		std::string 	get_file_CGI_name() const { return (file_CGI_name); }
+		void 			set_file_CGI_name(std::string filename)  { file_CGI_name = filename; }
 		std::string 	get_html_body_response() const { return (html_body_response); }
 		void 			set_html_body_response(std::string body)  { html_body_response = body; }
 		std::vector<Server *>	getServer(){return (ser);}
@@ -120,7 +123,7 @@ class Client
 		void    		Binary(const char *str, size_t size_read);
 		size_t 			FindStringInBuffer(const char* buffer, size_t buffer_size, const char* str,int pos);
 		int				FailCaseHeaderRequest();
-		std::string 	FileName();
+		std::string 	FileExtension();
 		void    		httpMethod();
 		void 			set_file_fd(FILE* fd);
 		void 			set_method(std::string type);

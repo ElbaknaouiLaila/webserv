@@ -6,7 +6,7 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 14:00:20 by mmanouze          #+#    #+#             */
-/*   Updated: 2023/04/18 02:31:07 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/04/28 18:16:17 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,10 @@
 
 Client::Client():request("NONE"), method_type("walo"),has_resp(false),isError(false), isWriting(false),has_request(false) ,sent_size(0), actual_size(0), file_fd(0),get_del(false), isParsed(false),htmlString(false),has_rediretion(false) ,i(0) 
 {
-	// file = new std::fstream;
-	// file->open("out", std::ios_base::out | std::ios_base::app | std::ios_base::binary);
-	
 }
 
 Client::~Client() 
 {
-	// file->clear();
-	// delete file;
 }
 
 std::string Client::get_request() const
@@ -115,7 +110,7 @@ void Client::clear()
 	//fclose(file_fd);
 
 	//std::ofstream requestBody;
-    //requestBody.open(FileName(), std::ios_base::out | std::ios_base::app | std::ios_base::binary);
+    //requestBody.open(FileExtension(), std::ios_base::out | std::ios_base::app | std::ios_base::binary);
 	//requestBody.clear();
 	//requestBody.close();
 	//file->clear();

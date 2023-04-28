@@ -84,10 +84,15 @@ int Client::getFirstBodyPart(std::string httpRequest, char *str, std::string del
             int result = removeFile(URI.c_str());
             if (result == 0)
             {
+                std::cout << "File deleted successfully" << std::endl;
                 StatusCode = "204 No Content";
                 set_error(true);
                 set_has_request(true);
                 return 0;
+            }else{
+                std::cout << "Error deleting file." << std::endl;
+                set_has_request(true);
+                return 1;
             }
             // error deleting file?
         }
@@ -96,7 +101,7 @@ int Client::getFirstBodyPart(std::string httpRequest, char *str, std::string del
     {
         std::ofstream requestBody;
         size_t PosChunked = RequestHeaders["Transfer-Encoding"].find("chunked");
-        requestBody.open("bodyRequestCopy" + FileName(), std::ios_base::out | std::ios_base::app | std::ios_base::binary);
+        requestBody.open("bodyRequestCopy" + FileExtension(), std::ios_base::out | std::ios_base::app | std::ios_base::binary);
         std::string ss(str, size_read);
         lenghtHeader = ss.find("\r\n\r\n") + 4;
         body.assign(ss.erase(0, lenghtHeader));
@@ -163,7 +168,7 @@ void Client::ParseChunked(const char *str, size_t size_read)
     const char *buffer = str;
     size_t buffer_size = size_read;
 
-    requestBody.open("bodyRequestCopy" + FileName(), std::ios::out | std::ios::app | std::ios::binary);
+    requestBody.open("bodyRequestCopy" + FileExtension(), std::ios::out | std::ios::app | std::ios::binary);
     while (buffer_size > 0)
     {
         size_t pos = 0;
@@ -220,7 +225,7 @@ void Client::ParseChunked(const char *str, size_t size_read)
 void Client::Binary(const char *str, size_t size_read)
 {
     std::fstream requestBody;
-    requestBody.open("bodyRequestCopy" + FileName(), std::ios_base::out | std::ios_base::app | std::ios_base::binary);
+    requestBody.open("bodyRequestCopy" + FileExtension(), std::ios_base::out | std::ios_base::app | std::ios_base::binary);
     requestBody.write(str, size_read);
     lenghtBody += size_read;
     if (stoi(RequestHeaders["Content-Length"]) == i - lenghtHeader)
@@ -237,7 +242,7 @@ void Client::Binary(const char *str, size_t size_read)
     }
 }
 
-std::string Client::FileName()
+std::string Client::FileExtension()
 {
     std::string path = RequestHeaders["Content-Type"];
     if (path.find("text/css") != std::string::npos)

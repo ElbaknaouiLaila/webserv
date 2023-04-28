@@ -18,6 +18,8 @@ server
         autoindex on
         root webservteam
         index life.html
+        index lie.html
+        index lfe.html
         upload_pass /upload
         cgi_php fullpathofcgiphp
         cgi_py fullpathofcgipython
