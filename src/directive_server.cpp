@@ -6,7 +6,7 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 01:16:10 by rmoujan           #+#    #+#             */
-/*   Updated: 2023/04/26 19:33:24 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/04/29 13:34:23 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,7 +209,7 @@ void location_name(Server *obj, std::string name)
 Location* location_directive(std::ifstream &infile, Server *obj, std::string name)
 {
 	std::string data;
-	Location *loc;
+	Location *loc = NULL;
 	location_name(obj, name);
 	getline(infile, data);
 	

@@ -6,7 +6,7 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 13:52:04 by mmanouze          #+#    #+#             */
-/*   Updated: 2023/04/28 18:14:58 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/04/29 15:26:30 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ class Client
 		void 			HTTP_Request_pars(std::string httpRequest, int size_read, const char *str, int i);
 		void 			RequestLine(size_t pos, std::string Request_headers);
 		void 			ParseRequestHeaders(std::string Request_headers);
-		int 			getFirstBodyPart(std::string httpRequest, char *str, std::string delimiter, size_t size_read);
+		int 			getFirstBodyPart(char *str, size_t size_read);
 		void    		getBody(const char *str, size_t size_read);
 		void 			ParseChunked(const char *str, size_t size_read);
 		void 			ParseBoundary(const char *str, size_t size_read);
@@ -142,13 +142,16 @@ class Client
 		bool			isDirectory(const char* path);
 		int 			removeDirectory(const char* path);
 		int 			removeFile(const char* filePath);
+		int 			stringToInt(const std::string& str);
 		std::string 	find_extension(std::string filename);
+		void 			cgi_GET_response(std::string filename);
 		void 			set_URI(const std::string &set)
 		{
 			URI.clear();
 			URI = set;
 		}
 		void 			clear();
+void cgi_response(std::string body_req, std::map<std::string, std::string> RequestHeaders, std::string script, std::string URI);
 };
 // std::fstream 	out;
 #endif

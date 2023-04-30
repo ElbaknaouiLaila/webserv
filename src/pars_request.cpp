@@ -35,7 +35,7 @@ bool Client::isDirectory(const char *path)
 }
 
 //------------------------ Body of request------------------------//
-int Client::getFirstBodyPart(std::string httpRequest, char *str, std::string delimiter, size_t size_read)
+int Client::getFirstBodyPart(char *str, size_t size_read)
 {
     if (Method == "GET")
     {
@@ -101,7 +101,7 @@ int Client::getFirstBodyPart(std::string httpRequest, char *str, std::string del
     {
         std::ofstream requestBody;
         size_t PosChunked = RequestHeaders["Transfer-Encoding"].find("chunked");
-        requestBody.open("bodyRequestCopy" + FileExtension(), std::ios_base::out | std::ios_base::app | std::ios_base::binary);
+        requestBody.open("bodyRequest" + FileExtension(), std::ios_base::out | std::ios_base::app | std::ios_base::binary);
         std::string ss(str, size_read);
         lenghtHeader = ss.find("\r\n\r\n") + 4;
         body.assign(ss.erase(0, lenghtHeader));
@@ -128,8 +128,6 @@ int Client::getFirstBodyPart(std::string httpRequest, char *str, std::string del
 
 void Client::getBody(const char *str, size_t size_read)
 {
-    size_t content_lenght = stoi(RequestHeaders["Content-Length"]);
-    size_t PosBoundary = RequestHeaders["Content-Type"].find("boundary");
     size_t PosChunked = RequestHeaders["Transfer-Encoding"].find("chunked");
 
     if (PosChunked != std::string::npos)
@@ -168,7 +166,7 @@ void Client::ParseChunked(const char *str, size_t size_read)
     const char *buffer = str;
     size_t buffer_size = size_read;
 
-    requestBody.open("bodyRequestCopy" + FileExtension(), std::ios::out | std::ios::app | std::ios::binary);
+    requestBody.open("bodyRequest" + FileExtension(), std::ios::out | std::ios::app | std::ios::binary);
     while (buffer_size > 0)
     {
         size_t pos = 0;
@@ -225,10 +223,11 @@ void Client::ParseChunked(const char *str, size_t size_read)
 void Client::Binary(const char *str, size_t size_read)
 {
     std::fstream requestBody;
-    requestBody.open("bodyRequestCopy" + FileExtension(), std::ios_base::out | std::ios_base::app | std::ios_base::binary);
+    requestBody.open("bodyRequest" + FileExtension(), std::ios_base::out | std::ios_base::app | std::ios_base::binary);
     requestBody.write(str, size_read);
     lenghtBody += size_read;
-    if (stoi(RequestHeaders["Content-Length"]) == i - lenghtHeader)
+    // if (stringToInt((unsigned int)(RequestHeaders["Content-Length"])) == (i - lenghtHeader))
+    if ((unsigned int)stringToInt((RequestHeaders["Content-Length"])) == (i - lenghtHeader))
     {
         // requestBody.seekg(0, std::ios::end);
         // lenghtBodyFile = requestBody.tellg();
@@ -335,12 +334,14 @@ void Client::ParseRequestHeaders(std::string Request_headers)
 
 void Client::HTTP_Request_pars(std::string httpRequest, int size_read, const char *str, int i)
 {
+    (void)i;
     std::string delimiter = "\r\n\r\n";
     size_t pos = httpRequest.find(delimiter);
     std::string Request_headers;
     if (pos != std::string::npos && isParsed == false)
     {
         Request_headers = httpRequest.substr(0, pos); // Here we store the header of the request
+        std::cout<< Request_headers << std::endl; 
         RequestLine(pos, Request_headers);            // here we parse the Request line (Method, URI, http Version)
         ParseRequestHeaders(Request_headers);         // here we parse the header data
         if (FailCaseHeaderRequest() == 1)
@@ -356,18 +357,22 @@ void Client::HTTP_Request_pars(std::string httpRequest, int size_read, const cha
             set_has_request(true);
             return;
         }
-        if (getFirstBodyPart(httpRequest, (char *)str, delimiter, size_read))
+        if (getFirstBodyPart((char *)str, size_read))
         {
             return;
         }
         isParsed = true;
     }
-    else if (Method == "POST" && size_read)
+    if (Method == "POST" && size_read)
     {
+        std::cout<<"==========================================heresdfkdfks"<<std::endl;
         getBody(str, size_read);
         if (send413Response() == 1)
             return;
         if (get_has_request() == true)
+        {
+            std::cout<<"here"<<std::endl;
             POST_Response();
+        }
     }
 }

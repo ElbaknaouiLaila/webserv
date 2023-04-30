@@ -6,7 +6,7 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 15:05:19 by mmanouze          #+#    #+#             */
-/*   Updated: 2023/04/27 22:55:58 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/04/29 14:55:22 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,10 @@ void servers::full_path(Client &object)
 	std::string ok;
 	std::string take;
 	ok.append(object.get_URI());
-	std::cout << "URI fih : " << object.get_URI() << std::endl;
 	//ok = object.get_URI();
 	std::cout << "dkhaaaaaaaaaal                 " << object.get_URI() << std::endl;
+	// if (object.get_URI().find("scripts") != (std::string::npos))
+	// 	return ;
 
 	if (object.get_URI().find("/favicon.ico") != std::string::npos)
 	{
@@ -51,6 +52,7 @@ void servers::full_path(Client &object)
 		else if (object.get_status() == "409 Conflict")
 			object.set_URI("ErrorPage/Error409.html");
 	}
+	std::cout << "URI fih : " << object.get_URI() << std::endl;
 	// else if (object.get_URI() == "/")
 	// 	object.set_URI("GET_files/index.html");
 	// else if (object.get_URI() != "GET_files/index.html")

@@ -6,7 +6,7 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 18:11:29 by mmanouze          #+#    #+#             */
-/*   Updated: 2023/04/28 15:53:17 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/04/29 14:03:01 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ const char *get_content_type(const char* path) {
         if (strcmp(last_dot, ".svg") == 0) return "image/svg+xml";
         if (strcmp(last_dot, ".txt") == 0) return "text/plain";
 		if (strcmp(last_dot, ".c") == 0) return ("text/plain");
+		if (strcmp(last_dot, ".php") == 0) return ("text/html");
+
     }
 
     return "application/octet-stream";
@@ -118,7 +120,7 @@ void servers::clients_waiting_room(std::vector<Server *> ser)
 		//std::cout << it->first << " kay9lab 3a raso\n";
 		if (FD_ISSET(it->first, &readfds) and it->second.get_has_request() == false) // && it->second.get_met() == false)
 		{
-			int i = read_request(it->first, it->second, ser);
+			read_request(it->first, it->second, ser);
 			//if (i == 1)
 			//	return ;
 		}
@@ -257,6 +259,7 @@ void servers::send_response(int newsockfd, Client &object)
 			object.set_status("200 OK");
 
 		const char *ct = get_content_type(object.get_URI().c_str());
+		std::cout << "ct : " << ct << std::endl;
 		std::string buff = "HTTP/1.1 " + object.get_status() + "\r\n" 
 							+ "Connection: close\r\n"
 							+ "Content-Length: "+ toString(cl) + "\r\n"

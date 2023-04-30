@@ -10,6 +10,14 @@
 // [4xxs – Client errors..........]
 // [5xxs – Server errors..........]
 
+int Client::stringToInt(const std::string& str) {
+    int result;
+    std::stringstream ss(str);
+    ss >> result;
+    return result;
+}
+
+
 std::string find_string(const std::string& str, const std::string& substr) {
     size_t pos = str.find(substr);
     if (pos != std::string::npos) {
@@ -39,10 +47,10 @@ int Client::get_matched_location_for_request_uri()
     std::map<std::string, Location*>	loc_;
     std::string UriCopy = URI;
     bool found = false;
-    bool flag = false;
+    // bool flag = false;
     for (it = ser.begin() ; it != ser.end(); it++)
     {
-        if ((*it)->getPort() == stoi(Port))
+        if ((*it)->getPort() == stringToInt(Port))
         {
             while (UriCopy.find_last_of('/') != 0 || found == false)
             {
@@ -72,6 +80,7 @@ int Client::get_matched_location_for_request_uri()
 
 int Client::is_method_allowed_in_location(std::string method)
 {
+    (void)method;
     std::vector<std::string>	AllowedMethod;
 	std::vector<std::string>::iterator	AM;
 
@@ -87,10 +96,10 @@ int Client::is_method_allowed_in_location(std::string method)
 int Client::send413Response()
 {
     std::vector<Server *> ::iterator it;
-    int lenght;
+    int lenght = 0;
     for (it = ser.begin() ; it != ser.end(); it++)
     {
-        if ((*it)->getPort() == stoi(Port))
+        if ((*it)->getPort() == stringToInt(Port))
         {
             lenght = (*it)->getClientSize();
             break;
@@ -129,6 +138,8 @@ bool send501Response( std::map<std::string, std::string> header_map){
     return 0;
 }
 
+
+
 int Client::GET_Response()
 {
     std::string URL;
@@ -147,6 +158,18 @@ int Client::GET_Response()
             // Return a 301 Moved Permanently response with the updated URL
             URI = URI + "/";
             StatusCode = "301 Moved Permanently";
+        }
+        if (loc->getIndex().size() > 0 and access(((URI) + (loc->getIndex())).c_str(), F_OK) != -1)
+        {
+            if (find_extension(loc->getIndex()) == "php" and loc->getCgiPhp().size())
+            {
+                cgi_GET_response(loc->getIndex());
+                return(0);
+            }else if (find_extension(loc->getIndex()) == "py" and loc->getCgiPy().size())
+            {
+                cgi_GET_response(loc->getIndex());
+                return(0);
+            }
         }
         if (loc->getAutoIndex() == "off" )
         {
@@ -173,25 +196,23 @@ int Client::GET_Response()
                 set_has_request(true);
             }
         }
+
     }
-    else if (is_dir == NULL and Method == "GET" and loc->getCgiPhp().size() and loc->getCgiPy().size())
+    else if (is_dir == NULL and Method == "GET")
     {
-        // std::string filename =URI.substr(URI.rfind("/"));
-        // std::size_t dotPos = filename.rfind(".");
-        // if (dotPos == std::string::npos) {
-        //     std::cout << "File has no extension" << std::endl;
-        // } else {
-        //     std::string extractedExtension = filename.substr(dotPos);
-        //     if (loc->getCgiPhp().size() and (extractedExtension == "php")) {
-        //         set_cgiExtension("php");
-        //     } else if(loc->getCgiPy().size() and (extractedExtension == "py")){
-        //         set_cgiExtension("py");
-        //     }
-        //     //run cgi on request file
-        // }
+        if (find_extension(URI) == "php" and loc->getCgiPhp().size())
+        {
+            cgi_GET_response(URI);
+            return(0);
+        }else if (find_extension(URI) == "py" and loc->getCgiPy().size())
+        {
+            cgi_GET_response(URI);
+            return(0);
+        }
         StatusCode = "200 OK";
+        set_has_request(true);
     }
-    set_has_request(true);
+    set_has_request(true);// ****set has request to true
     return 0;
 }
 
@@ -258,10 +279,11 @@ std::string Client::find_extension(std::string filename)
 
 int Client::POST_Response()
 {
-     struct stat info;
+                std::cout <<"=== >> ELSE OF CGI "<<std::endl;
+    //  struct stat info;
     std::string URI_upload;
     std::string upload_path = loc->getUpload();
-    std::string file_name = "bodyRequestCopy"+FileExtension();
+    std::string file_name = "bodyRequest"+FileExtension();
     std::fstream   requestBody;
     requestBody.open(file_name, std::ios::out | std::ios::app | std::ios::binary);
     if (upload_path.size())
@@ -291,6 +313,13 @@ int Client::POST_Response()
     {
         if (isDirectory(URI.c_str()))
         {
+            std::cout<<"RequestHeaders'info  "<<std::endl;
+            std::map<std::string, std::string> ::iterator data;
+            for (data= RequestHeaders.begin(); data != RequestHeaders.end(); data++)
+		    {
+		    	std::cout <<"* NAME  		 			:"<<data->first<<" ";
+		    	std::cout <<"* VALUE          			:"<<data->second<<"|"<<std::endl;
+		    }
             if (URI.back() != '/' and access((URI).c_str(), F_OK) != -1)
             {
                 URI = URI + "/";
@@ -299,9 +328,18 @@ int Client::POST_Response()
             if (URI.back() == '/' and find_extension(loc->getIndex()) == "php" and access((URI + loc->getIndex()).c_str(), F_OK) != -1 and loc->getCgiPhp().size() != 0)
             {
                 set_file_CGI_name((URI + loc->getIndex()));
+                //call cgi program
+                cgi_response(file_name,RequestHeaders,loc->getCgiPhp(), URI);
+
+                
             }else if (URI.back() == '/' and find_extension(loc->getIndex()) == "py" and access((URI + loc->getIndex()).c_str(), F_OK) != -1 and loc->getCgiPy().size() != 0)
             {
                 set_file_CGI_name((URI + loc->getIndex()));
+                // int fd = open("bodyRequest" + FileExtension())
+                // call cgi program
+                cgi_response(file_name,RequestHeaders,loc->getCgiPy(), URI);
+                // cgi_response(RequestHeaders, "bodyRequest" + FileExtension());
+
             }else if (URI.back() == '/' and find_extension(loc->getIndex()) == "html" and access((URI + loc->getIndex()).c_str(), F_OK) != -1)
             {
                 URI = (URI) + (loc->getIndex());
@@ -317,18 +355,34 @@ int Client::POST_Response()
             }
         }else
         {
+            std::string filename = URI.substr(URI.rfind("/"));
+            find_extension(filename);
             // if requested file
-            if (loc->getCgiPhp().size() == 0 and loc->getCgiPy().size() == 0)
+                // run cgi on request file
+                //ckeck extension of file if it is php or py
+            if (get_cgiExtension() == "php" or get_cgiExtension() == "py")
             {
-                StatusCode = "403 Forbidden";
+                if(get_cgiExtension() == "php"and access(URI.c_str(), F_OK) and loc->getCgiPhp().size() != 0)
+                    cgi_response(file_name,RequestHeaders,loc->getCgiPhp(), URI);
+                else if(get_cgiExtension() == "py" and access(URI.c_str(), F_OK) and loc->getCgiPy().size() != 0)
+                    cgi_response(file_name,RequestHeaders,loc->getCgiPy(), URI);
+                else
+                {
+                    StatusCode = "403 Forbidden";
+                    set_error(true);
+                    set_has_request(true);
+                    return 1;
+                }
+            }else if(access(URI.c_str(), F_OK) != -1)
+            {
+                set_has_request(true);
+                return(0);
+            }else
+            {
+                StatusCode = "404 Not Found";
                 set_error(true);
                 set_has_request(true);
                 return 1;
-            }else 
-            {
-                // run cgi on request file
-                std::string filename =URI.substr(URI.rfind("/"));
-                find_extension(filename);
             }
         }
     }
@@ -382,6 +436,7 @@ int    Client::FailCaseHeaderRequest()
     }
     if (get_matched_location_for_request_uri())
     {
+        std::cout<<"=====================>here"<<std::endl;
         StatusCode = "404 Not Found";
         set_error(true);
         set_has_request(true);

@@ -9,7 +9,7 @@ server
     error_page 800 ../errors/400.html
     error_page 100 ../errors/404.html
     error_page 300 ../errors/500.html
-    root /Users/lelbakna/Desktop/webservteam/
+    root /Users/rmoujan/Desktop/webserv_team
     index index.html
     location /planet/2/3
     {
@@ -35,62 +35,23 @@ server
         cgi_php fullpathofcgiphp
         cgi_py fullpathofcgipython
     }
-    location /planet
+    location /scripts
     {
         allow_methods GET POST DELETE
-        redirect https://www.tooplate.com/live/2097_pop
         autoindex on 
-        root GET_files
-        index life.html
+        root scripts
         upload_pass /upload
-        cgi_py fullpathofcgipython
+        index page.php
+        cgi_php 
+        cgi_py /Users/lelbakna/Desktop/webserv_team/scripts/php_cgi
+
     }
     location /
     {
         allow_methods GET POST DELETE
         autoindex on
         root GET_files
-        upload_pass GET_files/upload
-        index lifxe.html
-        cgi_py fullpathofcgipython
-    }
-}
-server
-{
-    listen     127.0.0.1:8081
-    server_name    Reshe
-    client_max_body_size 565454555
-    error_page 400 ../errors/400.html
-    error_page 404 ../errors/404.html
-    error_page 700 ../errors/500.html 
-    error_page 800 ../errors/400.html
-    error_page 100 ../errors/404.html
-    error_page 300 ../errors/500.html
-    root allah.com
-    index index.html
-    location /
-    {
-        allow_methods GET POST DELETE
-        autoindex on
-        root GET_files
-        upload_pass GET_files/upload
-        index index.html
-        cgi_py java
-    }
-    location /GET_files
-    {
-        allow_methods GET POST DELETE
-        autoindex on
-        upload_pass GET_files/upload
-        root GET_files
-        cgi_php fullpathofcgipython
-    }
-    location /GET_files/life.html
-    {
-        allow_methods GET POST DELETE
-        autoindex on
-        root GET_files
-        upload_pass /upload
-        cgi_py fullpathofcgipython
+        index page.php
+        cgi_php /Users/lelbakna/Desktop/webserv_team/scripts/php_cgi
     }
 }

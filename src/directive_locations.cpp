@@ -6,7 +6,7 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 02:17:14 by rmoujan           #+#    #+#             */
-/*   Updated: 2023/04/26 19:34:03 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/04/29 13:34:35 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void directive_allow_methods(Location *loc, std::string methods)
 	std::vector<std::string>			allowed_ways;
 	std::vector<std::string>::iterator	it;
 	std::string		data;
-	int number;
+	// int number;
 	int i = 0;
 
 	std::stringstream in(methods);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rmoujan <rmoujan@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/30 21:11:33 by rmoujan           #+#    #+#             */
-/*   Updated: 2023/04/26 19:34:24 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/04/28 19:45:43 by rmoujan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,5 +239,5 @@ int rbrace_check(std::string data);
 int lbrace_check(std::string data);
 int skipe_whitespace_all(std::string data);
 void check_duplicate_locations(std::string name, std::map<std::string, Location*> content_location);
-void ft_free (std::vector<Server *> servers);
+void free_servers (std::vector<Server *> servers);
 void directive_upload(Location *loc, std::string upload_name);

@@ -6,13 +6,13 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 14:00:20 by mmanouze          #+#    #+#             */
-/*   Updated: 2023/04/28 18:16:17 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/04/29 13:45:00 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/clients.hpp"
 
-Client::Client():request("NONE"), method_type("walo"),has_resp(false),isError(false), isWriting(false),has_request(false) ,sent_size(0), actual_size(0), file_fd(0),get_del(false), isParsed(false),htmlString(false),has_rediretion(false) ,i(0) 
+Client::Client(): get_del(false),has_resp(false), isParsed(false),has_request(false),isError(false), isWriting(false),htmlString(false),has_rediretion(false) ,  file_fd(0),sent_size(0),actual_size(0),request("NONE"),method_type("walo") ,i(0) 
 {
 }
 

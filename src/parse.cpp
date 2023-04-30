@@ -6,7 +6,7 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 20:36:45 by rmoujan           #+#    #+#             */
-/*   Updated: 2023/04/26 19:31:45 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/04/29 13:34:02 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,13 @@ Server * get_data_of_server(std::ifstream &infile)
 	std::map<std::string, Location*>	content_location;
 	std::map<int, std::string>			error_page;
 	std::string							data;
-	Server								*obj;
+	Server								*obj = NULL;
 	Location							*loc;
 
 	getline(infile, data);
 	skipe_empty_lines(infile, data);
 	std::cout <<"data is |"<<data<<"|"<<std::endl;
-	if (data.find("{") != (std::string::npos) && rbrace_check(data))
+	if ((data.find("{") != (std::string::npos)) && rbrace_check(data))
 	{
 		std::cout <<"data is "<<std::endl;
 		obj = newServer();
