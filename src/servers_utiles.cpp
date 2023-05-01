@@ -6,7 +6,7 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 15:05:19 by mmanouze          #+#    #+#             */
-/*   Updated: 2023/04/29 14:55:22 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/05/01 15:18:21 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,7 @@ void servers::full_path(Client &object)
 	// if (object.get_URI().find("scripts") != (std::string::npos))
 	// 	return ;
 
-	if (object.get_URI().find("/favicon.ico") != std::string::npos)
-	{
-		take = "GET_files/ICON.ico";
-		object.set_URI(take);
-	}
-	else if (object.get_error() == true)
+	if (object.get_error() == true)
 	{
 		if (object.get_status() == "501 Not Implemented")
 			object.set_URI("ErrorPage/Error501.html");
@@ -51,6 +46,8 @@ void servers::full_path(Client &object)
 			object.set_URI("ErrorPage/Error201.html");
 		else if (object.get_status() == "409 Conflict")
 			object.set_URI("ErrorPage/Error409.html");
+		else if (object.get_status() == "200 OK")
+			object.set_URI("ErrorPage/Error200.html");
 	}
 	std::cout << "URI fih : " << object.get_URI() << std::endl;
 	// else if (object.get_URI() == "/")

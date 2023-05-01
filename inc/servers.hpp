@@ -6,7 +6,7 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 18:08:08 by mmanouze          #+#    #+#             */
-/*   Updated: 2023/04/14 01:55:34 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/05/01 01:39:28 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@
 #include "parse.hpp"
 
 	#define BSIZE 2000
-#define BUFFER_SIZE 20000
+#define BUFFER_SIZE 60000
 
 class servers
 {
@@ -71,7 +71,12 @@ class servers
 		void 				full_path(Client &object);
 };
 
-
+template <typename T>
+std::string toString(T val) {
+    std::stringstream ss;
+    ss << val;
+    return ss.str();
+}
 
 
 #endif

@@ -6,12 +6,13 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 13:52:04 by mmanouze          #+#    #+#             */
-/*   Updated: 2023/04/29 15:26:30 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/05/01 19:54:28 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CLIENTS_HPP
 # define CLIENTS_HPP
+
 
 #include <errno.h>
 #include <iostream>
@@ -73,11 +74,16 @@ class Client
 		std::vector<Server *> ser;
 		std::string html_body_response;
 		Location*	loc;
+		std::string		n;
+		std::string		str_cgi;
 	public :
 		int i ;
 		std::map<std::string, std::string> RequestHeaders;
+		// std::fstream request_body;
 		Client();
 		~Client();
+		std::string 	get_str_cgi() const { return (str_cgi); }
+		void 			set_str_cgi(std::string str)  { str_cgi = str; }
 		std::string 	get_file_CGI_name() const { return (file_CGI_name); }
 		void 			set_file_CGI_name(std::string filename)  { file_CGI_name = filename; }
 		std::string 	get_html_body_response() const { return (html_body_response); }
@@ -145,13 +151,15 @@ class Client
 		int 			stringToInt(const std::string& str);
 		std::string 	find_extension(std::string filename);
 		void 			cgi_GET_response(std::string filename);
+		std::fstream 			openFile();
+		void 			set_html_string(bool set) { htmlString = set; }
 		void 			set_URI(const std::string &set)
 		{
 			URI.clear();
 			URI = set;
 		}
 		void 			clear();
-void cgi_response(std::string body_req, std::map<std::string, std::string> RequestHeaders, std::string script, std::string URI);
 };
+void cgi_response(Client &object, std::string body_req, std::map<std::string, std::string> RequestHeaders, std::string script, std::string URI);
 // std::fstream 	out;
 #endif

@@ -17,7 +17,6 @@ int Client::stringToInt(const std::string& str) {
     return result;
 }
 
-
 std::string find_string(const std::string& str, const std::string& substr) {
     size_t pos = str.find(substr);
     if (pos != std::string::npos) {
@@ -62,6 +61,7 @@ int Client::get_matched_location_for_request_uri()
                     {
                         URI = (itr->second)->getRoot() + find_string(URI, (itr->second)->getRoot());
                         loc = itr->second;
+                        std::cout << "----------------> Found : "<< URI << "------>  " << itr->first << std::endl;
                         return (0);
                     }
                 }
@@ -144,9 +144,11 @@ int Client::GET_Response()
 {
     std::string URL;
     DIR* is_dir = opendir(URI.c_str());
-    //check index file 
+    //check index file
+
     if (Method == "GET" and access((URI).c_str(), F_OK) == -1)// path and mode(F_OK: file exists)
     {
+        std::cout << "----------------> Not Found : "<< URI << std::endl;
         StatusCode = "404 Not Found";
         set_error(true);
         set_has_request(true);
@@ -161,14 +163,18 @@ int Client::GET_Response()
         }
         if (loc->getIndex().size() > 0 and access(((URI) + (loc->getIndex())).c_str(), F_OK) != -1)
         {
-            if (find_extension(loc->getIndex()) == "php" and loc->getCgiPhp().size())
+                std::cout << "------> "<< find_extension(loc->getIndex()) << std::endl;
+                std::cout << "------> "<< (URI)+loc->getIndex() << std::endl;
+             if (find_extension(loc->getIndex()) == "py" and loc->getCgiPy().size())
             {
-                cgi_GET_response(loc->getIndex());
+                cgi_GET_response((URI) + loc->getIndex());
+                set_has_request(true);
                 return(0);
-            }else if (find_extension(loc->getIndex()) == "py" and loc->getCgiPy().size())
+            }else
             {
-                cgi_GET_response(loc->getIndex());
-                return(0);
+                StatusCode = "200 OK";
+                // set_error(true);
+                set_has_request(true);
             }
         }
         if (loc->getAutoIndex() == "off" )
@@ -200,13 +206,11 @@ int Client::GET_Response()
     }
     else if (is_dir == NULL and Method == "GET")
     {
-        if (find_extension(URI) == "php" and loc->getCgiPhp().size())
+        if (find_extension(URI) == "py" and loc->getCgiPy().size())
         {
+            std::cout << "rah dkhal hna " << std::endl;
             cgi_GET_response(URI);
-            return(0);
-        }else if (find_extension(URI) == "py" and loc->getCgiPy().size())
-        {
-            cgi_GET_response(URI);
+            set_has_request(true);
             return(0);
         }
         StatusCode = "200 OK";
@@ -265,7 +269,7 @@ std::string Client::find_extension(std::string filename)
     if (dotPos == std::string::npos) {
         std::cout << "File has no extension" << std::endl;
     } else {
-        extractedExtension = filename.substr(dotPos);
+        extractedExtension = filename.substr(dotPos + 1);
         if (loc->getCgiPhp().size() and (extractedExtension == "php")) {
             set_cgiExtension("php");
             return "php";
@@ -285,13 +289,17 @@ int Client::POST_Response()
     std::string upload_path = loc->getUpload();
     std::string file_name = "bodyRequest"+FileExtension();
     std::fstream   requestBody;
+    std::fstream   upload_file;
     requestBody.open(file_name, std::ios::out | std::ios::app | std::ios::binary);
+    // std::cout<<"====>URI : "<<URI<<std::endl;
+    // upload_file.open((upload_path + file_name), std::ios::out | std::ios::app | std::ios::binary);
     if (upload_path.size())
     {
         std::string mv_path = upload_path + std::string("/");
-        std::cout<<"URI + Path : "<<mv_path<<std::endl;
-        if (isDirectory((mv_path).c_str()))
+        std::cout<<"====>Path : "<<mv_path<<std::endl;
+        if (isDirectory((mv_path).c_str()) and access(upload_path.c_str(), F_OK) != -1)
         {
+            std::cout<<"====================>is Directory"<<std::endl;
             if (rename(file_name.c_str(), (mv_path + file_name).c_str()) != 0)
             {
                 std::cerr << "Failed to move file. or 404 Not Found"<<mv_path << std::endl;
@@ -329,7 +337,7 @@ int Client::POST_Response()
             {
                 set_file_CGI_name((URI + loc->getIndex()));
                 //call cgi program
-                cgi_response(file_name,RequestHeaders,loc->getCgiPhp(), URI);
+                cgi_response((*this), file_name,RequestHeaders,loc->getCgiPhp(), URI);
 
                 
             }else if (URI.back() == '/' and find_extension(loc->getIndex()) == "py" and access((URI + loc->getIndex()).c_str(), F_OK) != -1 and loc->getCgiPy().size() != 0)
@@ -337,7 +345,7 @@ int Client::POST_Response()
                 set_file_CGI_name((URI + loc->getIndex()));
                 // int fd = open("bodyRequest" + FileExtension())
                 // call cgi program
-                cgi_response(file_name,RequestHeaders,loc->getCgiPy(), URI);
+                cgi_response((*this),file_name,RequestHeaders,loc->getCgiPy(), URI);
                 // cgi_response(RequestHeaders, "bodyRequest" + FileExtension());
 
             }else if (URI.back() == '/' and find_extension(loc->getIndex()) == "html" and access((URI + loc->getIndex()).c_str(), F_OK) != -1)
@@ -360,12 +368,13 @@ int Client::POST_Response()
             // if requested file
                 // run cgi on request file
                 //ckeck extension of file if it is php or py
+            std::cout << "==========> "<< (URI) << std::endl;
             if (get_cgiExtension() == "php" or get_cgiExtension() == "py")
             {
-                if(get_cgiExtension() == "php"and access(URI.c_str(), F_OK) and loc->getCgiPhp().size() != 0)
-                    cgi_response(file_name,RequestHeaders,loc->getCgiPhp(), URI);
-                else if(get_cgiExtension() == "py" and access(URI.c_str(), F_OK) and loc->getCgiPy().size() != 0)
-                    cgi_response(file_name,RequestHeaders,loc->getCgiPy(), URI);
+                if(get_cgiExtension() == "php"and access(URI.c_str(), F_OK) != -1 and loc->getCgiPhp().size() != 0)
+                    cgi_response((*this),file_name,RequestHeaders,loc->getCgiPhp(), URI);
+                else if(get_cgiExtension() == "py" and access(URI.c_str(), F_OK) != -1 and loc->getCgiPy().size() != 0)
+                    cgi_response((*this),file_name,RequestHeaders,loc->getCgiPy(), URI);
                 else
                 {
                     StatusCode = "403 Forbidden";
@@ -396,7 +405,8 @@ void Client::list_directory(const char* path) {
         return;
     }
     // char *nedle[1] = '/';
-    path = strstr(path, "/");
+    std::cout << "path: " << path << std::endl;
+    // path = strstr(path, "/");
     struct dirent* entry;
     std::string html = "<html>\n<head>\n<title>Directory Listing</title>\n<h1>List Directory "+std::string(path)+"</h1>\n<hr>\n</head>\n<body>\n<ul>\n<li><a href=\"../\">../</a></li>\n";
     while ((entry = readdir(dir)) != NULL) {

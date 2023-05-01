@@ -155,21 +155,41 @@ bool is_directory(const char* path)
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
+std::string find_extension(std::string filename)
+{
+    std::string extractedExtension;
+    std::size_t dotPos = filename.rfind(".");
+    if (filename.empty())
+        return ("");
+    if (dotPos == std::string::npos) {
+        std::cout << "File has no extension" << std::endl;
+    } else {
+        extractedExtension = filename.substr(dotPos + 1);
+        if ((extractedExtension == "php")) {
+            // set_cgiExtension("php");
+            return "php";
+        } else if((extractedExtension == "py")){
+            // set_cgiExtension("py");
+            return "py";
+        }
+    }
+    return extractedExtension;
+}
 int main() {
 
    const char* sourceFile = "file.txt";
-    std::fstream   requestBody;
-    requestBody.open(sourceFile, std::ios::out | std::ios::app | std::ios::binary);
+//     std::fstream   requestBody;
+//     requestBody.open(sourceFile, std::ios::out | std::ios::app | std::ios::binary);
 
-   const char* destinationDirectory = "/upload/";
-   std::string path = "webservteam/GET_files";
-   std::string destinationFile = path + destinationDirectory + std::string(sourceFile) ;
+//    const char* destinationDirectory = "/upload/";
+//    std::string path = "webservteam/GET_files";
+//    std::string destinationFile = path + destinationDirectory + std::string(sourceFile) ;
    
-   int result = rename(sourceFile, destinationFile.c_str());
-   if (result != 0) {
-      std::cerr << "Error moving file : " << destinationFile <<std::endl;
-      exit(EXIT_FAILURE);
-   }
-   
+//    int result = rename(sourceFile, destinationFile.c_str());
+//    if (result != 0) {
+//       std::cerr << "Error moving file : " << destinationFile <<std::endl;
+//       exit(EXIT_FAILURE);
+//    }
+   std::cout << find_extension("file.py") << std::endl;
    return 0;
 }

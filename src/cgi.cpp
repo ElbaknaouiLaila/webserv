@@ -6,7 +6,7 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 22:51:57 by rmoujan           #+#    #+#             */
-/*   Updated: 2023/04/29 15:29:43 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/05/01 23:08:30 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,6 @@
 #include "../inc/clients.hpp"
 #include "../inc/parse.hpp"
 
-
-
-// arg[0] =  /Users/rmoujan/Desktop/Mainweb/cgi-bin/php-cgi //THIS IS THE EXECUTABLE
-// arg[1] = /Users/rmoujan/Desktop/Mainweb/test/test.php // THIS IS THE FILE REQUESTED
-// arg[2] = NULL
-// args[1] howa li aykon f script name script filename and path info
 
 void Client::cgi_GET_response(std::string filename)
 {
@@ -30,7 +24,7 @@ void Client::cgi_GET_response(std::string filename)
 
         char *env[] = { nullptr };
 
-        int fd = open("./GET_files/outputfile",  O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+        int fd = open("./GET_files/outputfile.txt",  O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
         int outpt = dup(1);
         dup2(fd, 1);
 
@@ -45,68 +39,47 @@ void Client::cgi_GET_response(std::string filename)
         {
             wait(NULL);
             dup2(outpt, 1);
-            set_URI("GET_files/outputfile");
+            set_URI("GET_files/outputfile.txt");
             std::cout <<"safii salat \n";
         }
 }
-void Client::cgi_response(std::string body_req, std::map<std::string, std::string> RequestHeaders, std::string script,std::string URI)
+void cgi_response(Client &object, std::string body_req, std::map<std::string, std::string> RequestHeaders, std::string script,std::string URI)
 {
     std::string extension;
     std::string fullpath;
-  std::cout<<"=========== >> FROM CGI RESPONSE "<<std::endl;
-  //   std::map<std::string, std::string> ::iterator data;
-  // for (data= RequestHeaders.begin(); data != RequestHeaders.end(); data++)
-	// 	{
-	// 		std::cout <<"* NAME  		 			:"<<data->first<<" ";
-	// 		std::cout <<"* VALUE          			:"<<data->second<<"|"<<std::endl;
-	// 	}
-  
-    // if (extension.compare("php") == 0)
-    // {
-    //   script = "php-cgi";//the name of script that will be executed by cgi
-    //   fullpath = "./scripts/php-cgi";//the full path of script
-    // }
-    // else if (extension.compare("py") == 0)
-    // {
-    //   script = "py-cgi";//the name of script that will be executed by cgi
-    //   fullpath = "./scripts/py-cgi";//the full path of script
-    // }
-    //location/file_requested.php ==>homa li at7tihum f path info 
-    std::string content_type = std::string("CONTENT_TYPE=") + RequestHeaders["Content-Type"];
-    if (content_type.find('\r') != std::string::npos)
-      std::cout<<"found"<<std::endl;
-      // content_type.erase(content_type.find('\r'));
+    std::cout<<"=========== >> BEGIN CGI RESPONSE "<<std::endl;
+    // trim(str, c);
+    // str.erase(0, str.find_first_not_of(" "));
+    std::string content_type = std::string("CONTENT_TYPE=") + RequestHeaders["Content-Type"].erase(0, RequestHeaders["Content-Type"].find_first_not_of(" "));
     std::cout <<"Content type "<<content_type<<std::endl;
-    std::string content_length = std::string("CONTENT_LENGTH=") + RequestHeaders["Content-Length"];
+    std::string content_length = std::string("CONTENT_LENGTH=") + RequestHeaders["Content-Length"].erase(0, RequestHeaders["Content-Length"].find_first_not_of(" "));
     std::cout <<"Content length "<<content_length<<std::endl;
-    std::string script_name = std::string("SCRIPT_NAME=") + URI;
+    std::string script_name = std::string("SCRIPT_NAME=") + URI.erase(0, URI.find_first_not_of(" "));
     std::cout <<"Script name "<<script_name<<std::endl;
-    std::string script_filename = std::string ("SCRIPT_FILENAME=") + URI;
+    std::string script_filename = std::string ("SCRIPT_FILENAME=") + URI.erase(0, URI.find_first_not_of(" "));
     std::cout <<"Script filename "<<script_filename<<std::endl;
-    std::string path_info = std::string("PATH_INFO=") + URI;
+    std::string path_info = std::string("PATH_INFO=") + URI.erase(0, URI.find_first_not_of(" "));
     std::cout <<"Path info "<<path_info<<std::endl;
-    // ==> homa galo f google que PATH_INFO HOWA MORA SCRIPT li F URL (o mashi URL kaml)
-    //sara7a ma3rftsh shnu dawer deyal had script, 7it and deja kan seti script_name and script_filename , so what is role of script li f URL ??
-    std::string query_str  = std::string ("QUERY_STRING=") + RequestHeaders["Query"];
+    std::string query_str  = std::string ("QUERY_STRING=") + RequestHeaders["Query"].erase(0, RequestHeaders["Query"].find_first_not_of(" "));
     std::cout <<"Query string "<<query_str<<std::endl;
-    std::string http_cookie = std::string ("HTTP_COOKIE=") + RequestHeaders["Cookie"];//still confused ??
+    std::string http_cookie = std::string ("HTTP_COOKIE=") + RequestHeaders["Cookie"].erase(0, RequestHeaders["Cookie"].find_first_not_of(" "));
     std::cout <<"Http cookie "<<http_cookie<<std::endl;
-    std::string request_method = std::string ("REQUEST_METHOD=") + RequestHeaders["Method"];
+    std::string request_method = std::string ("REQUEST_METHOD=") + RequestHeaders["Method"].erase(0, RequestHeaders["Method"].find_first_not_of(" "));
     std::cout <<"Request method "<<request_method<<std::endl;
-
-  
-    std::string protocol = std::string ("SERVER_PROTOCOL=") +RequestHeaders["Version"];
+    // std::string protocol = std::string ("SERVER_PROTOCOL=HTTP/1.1") ;
+    // std::cout <<"00000000000 Version:"<<RequestHeaders["Version"]<<std::endl;
+    std::string protocol = std::string ("SERVER_PROTOCOL=") +  RequestHeaders["Version"].erase(0, RequestHeaders["Version"].find_first_not_of(" "));
     std::cout <<"Protocol "<<protocol<<std::endl;
-    // std::string software = std::string ("SERVER_SOFTWARE=WEBSERV");
     std::string redirect = std::string ("REDIRECT_STATUS=true");
-    std::string url = std::string("REQUEST_url=") + URI;
+    std::string url = std::string("REQUEST_url=") + URI.erase(0, URI.find_first_not_of(" "));
     std::cout <<"Url "<<url<<std::endl;
-    std::string host = std::string("HTTP_HOST=") + RequestHeaders["Host"];
+    std::string host = std::string("HTTP_HOST=") + RequestHeaders["Host"].erase(0, RequestHeaders["Host"].find_first_not_of(" "));
     std::cout<<"Host "<<host<<std::endl;
-    std::string port = std::string("SERVER_PORT=") + RequestHeaders["Port"];
+    std::string port = std::string("SERVER_PORT=") + RequestHeaders["Port"].erase(0, RequestHeaders["Port"].find_first_not_of(" "));
     std::cout<<"Port "<<port<<std::endl;
     std::string gateway_interface = std::string("GATEWAY_INTERFACE=CGI/1.1");
-    std::cout<<"********script to run "<<script<<std::endl;
+    std::cout<<"********script to run"<<script<<std::endl;
+    std::cout <<"=========== >> END CGI RESPONSE "<<std::endl;
     char *envp[] = {
     (char *) content_length.c_str(),
     (char *) content_type.c_str(),
@@ -117,7 +90,6 @@ void Client::cgi_response(std::string body_req, std::map<std::string, std::strin
     (char *) http_cookie.c_str(),
     (char *) script_filename.c_str(),
     (char *) protocol.c_str(),
-    // (char *) software.c_str(),
     (char *) redirect.c_str(),
     (char *) url.c_str(),
     (char *) host.c_str(),
@@ -127,29 +99,15 @@ void Client::cgi_response(std::string body_req, std::map<std::string, std::strin
   };
 
     char *args[] = {
-    (char *) script.c_str(),   // Name of the executable to run
-    (char *) script_filename.c_str(),   // Name of file requested
-    NULL   // End of the argument list
+    (char *) script.c_str(),
+    (char *) (URI.erase(0, URI.find_first_not_of(" "))).c_str(),
+    NULL 
   };
 	const char* var = "outfilecgi";
   int fd_file = open(var, O_CREAT | O_RDWR | O_TRUNC, 0666);
-  int fd_req  = open(body_req.c_str(), O_RDWR , 0666);
-
-  // char buffer[256];
-  // ssize_t bytesRead = read(fd_req, buffer, sizeof(buffer)); // read from file
-  // if (bytesRead < 0) {
-  //     std::cerr << "Error reading file." << std::endl;
-  //       // std::cout <<"Error reading file." << endl;
-  //       return ;
-  //   }
-
-  // std::cout << "Read " << bytesRead << " bytes from file: " << buffer << std::endl;
-
-  // std::cout<<"fd_req "<<fd_req<<std::endl;
+  int fd_req  = open(body_req.c_str(), O_RDWR  , 0666);
   int stdout_copy = dup(1);
-  int stdin_copy = dup(0);
-  // (void)stdin_copy;
-  // (void)stdout_copy;
+  // int stdin_copy = dup(0);
   pid_t pid;
 	pid = fork();
   if (pid < 0) {
@@ -161,29 +119,66 @@ void Client::cgi_response(std::string body_req, std::map<std::string, std::strin
     dup2(fd_req, 0);
     close(fd_file);
     close(fd_req);
-    std::cout << "Child process." << std::endl;
-    
+    std::cerr << "Child process." << std::endl;
+    // args[1] = "/Users/rmoujan/Desktop/webserv_team/GET_files/process_form.php";
+    std::cerr <<"args[0]:"<<args[0]<<std::endl;
+    std::cerr <<"args[1]:"<<args[1]<<std::endl;
     if (execve(args[0], args, envp) == -1)
     {
-      std::cerr<<"Error in execve"<<std::endl;
-        ft_errnoo(2);
+      std::cerr << "Error: " << strerror(errno) << std::endl;
     }
-      // Code to be executed by child process
   }
   else
   {
-    // int fd_file = open(var, O_CREAT | O_RDWR | O_TRUNC, 0666);
-    
-    //restart 1 and 0 :
-    //hena ate9eray dak file output bash teb9ay tesiftih lserver
-    dup2(stdout_copy,1);
-    dup2(stdin_copy, 0);
-    // close(stdin_copy);
-    // close(stdout_copy);
-      int status;
-        waitpid(pid, &status, 0);
+    int status;
+    waitpid(pid, &status, 0);
     std::cout << "Parent process." << std::endl;
-    // Code to be executed by parent process
-  }
+    dup2(stdout_copy,1);
+    close(stdout_copy);
+    close(fd_file);
+    close(fd_req);
+    
+    //must put the output of outputcgi in astring after removing the header from it :
+    // int fd = open(var, O_RDWR, 0666);
+    // std::string result;
+    // result = read(fd, (*int)1024);
+    std::cout <<"================ 2090 =============== "<<std::endl;
+     std::ofstream outfile("outfilecgi", std::ios_base::app);
+    std::string vers = RequestHeaders["Version"].erase(0, RequestHeaders["Version"].find_first_not_of(" "));
+    std::size_t last_char_pos = vers.find_last_not_of("\r\n");
 
+    // If a non-newline character was found, erase the newline characters and everything after them
+    if (last_char_pos != std::string::npos) {
+        vers.erase(last_char_pos + 1);
+    }
+    std::ifstream infile("outfilecgi");
+    std::ostringstream contents;
+    contents << infile.rdbuf();
+    size_t pod =  contents.str().find("\r\n\r\n");
+    std::cout << "contents: " << contents.str().substr(pod+4) << std::endl;
+    std::string str_cgi = "<!DOCTYPE html>" + std::string("<html><body><p>") +contents.str().substr(pod+4)  + "</p></body></html>";
+    // object.set_str_cgi(str_cgi);
+    object.set_html_body_response(str_cgi);
+    object.set_status(" 200 OK");
+     object.set_html_string(true);
+    // std::cout <<"str_cgi: "<<contents.str().substr(pod+4)<<std::endl;
+    infile.close();
+    // std::ofstream outfile("resultcgi");
+    // if (outfile.is_open()) {
+    // outfile << vers <<" 200 OK" << std::endl;
+    // outfile << contents.str();
+    // outfile.close();
+    std::cout << "Content added to beginning of file." << std::endl;
+    // }
+    // std::ifstream infile("outfilecgi");
+    // std::string line;
+    // std::
+    // while (std::getline(infile, line)) {
+    //   std::cout << line << std::endl;
+    // }
+    // infile.close();
+  }
+  std::remove("/Users/lelbakna/Desktop/webserv_team/bodyRequest");
+  std::remove("/Users/lelbakna/Desktop/webserv_team/outfilecgi");
+  std::cout <<"================= END ================= "<<std::endl;
 }

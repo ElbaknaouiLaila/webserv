@@ -9,14 +9,14 @@ server
     error_page 800 ../errors/400.html
     error_page 100 ../errors/404.html
     error_page 300 ../errors/500.html
-    root /Users/rmoujan/Desktop/webserv_team
+    root /Users/lelbakna/Desktop/webserv_team
     index index.html
-    location /planet/2/3
+    location /GET_files/test
     {
         allow_methods GET POST DELETE
         redirect http://www.google.com/
         autoindex on
-        root webservteam
+        root /Users/lelbakna/Desktop/webserv_team
         index life.html
         index lie.html
         index lfe.html
@@ -24,14 +24,14 @@ server
         cgi_php fullpathofcgiphp
         cgi_py fullpathofcgipython
     }
-    location /planet/2/3/4
+    location /ErrorPage
     {
         allow_methods GET POST DELETE
         redirect http://www.google.com/ 
         autoindex on
-        root GET_files
+        root /Users/lelbakna/Desktop/webserv_team
         index life.html
-        upload_pass /Users/lelbakna/Desktop/webservteam/upload
+        upload_pass /Users/lelbakna/Desktop/webserv_team/upload
         cgi_php fullpathofcgiphp
         cgi_py fullpathofcgipython
     }
@@ -40,18 +40,36 @@ server
         allow_methods GET POST DELETE
         autoindex on 
         root scripts
-        upload_pass /upload
-        index page.php
-        cgi_php 
-        cgi_py /Users/lelbakna/Desktop/webserv_team/scripts/php_cgi
-
+        upload_pass /Users/lelbakna/Desktop/webserv_team/upload
+        index post_script.php
+        cgi_php /Users/lelbakna/Desktop/webserv_team/scripts/php-cgi
+        cgi_py /usr/bin/python
+    }
+    location /GET_files
+    {
+        allow_methods GET POST DELETE
+        autoindex on
+        root GET_files
+        index indedfdfgx.html
+        cgi_php /Users/lelbakna/Desktop/webserv_team/scripts/php-cgi
+        cgi_py /usr/bin/python
+    }
+    location /Users/lelbakna/Desktop/webserv_team
+    {
+        allow_methods GET POST DELETE
+        autoindex on
+        root /Users/lelbakna/Desktop/webserv_team
+        index index.html
+        cgi_php /Users/lelbakna/Desktop/webserv_team/scripts/php-cgi
+        cgi_py /usr/bin/python
     }
     location /
     {
         allow_methods GET POST DELETE
         autoindex on
-        root GET_files
-        index page.php
-        cgi_php /Users/lelbakna/Desktop/webserv_team/scripts/php_cgi
+        root /Users/lelbakna
+        index index.html
+        cgi_php /Users/lelbakna/Desktop/webserv_team/scripts/php-cgi
+        cgi_py /usr/bin/python
     }
 }

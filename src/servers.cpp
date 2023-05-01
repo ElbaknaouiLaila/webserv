@@ -6,7 +6,7 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 18:11:29 by mmanouze          #+#    #+#             */
-/*   Updated: 2023/04/29 14:03:01 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/05/01 22:29:29 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,9 @@ const char *get_content_type(const char* path) {
         if (strcmp(last_dot, ".txt") == 0) return "text/plain";
 		if (strcmp(last_dot, ".c") == 0) return ("text/plain");
 		if (strcmp(last_dot, ".php") == 0) return ("text/html");
-
     }
 
-    return "application/octet-stream";
+    return "text/plain";
 }
 
 
@@ -183,12 +182,6 @@ int servers::read_request(int newsockfd, Client &object, std::vector<Server *> s
 /////////////////////////////////////////////////////////////////////////
 
 
-template <typename T>
-std::string toString(T val) {
-    std::stringstream ss;
-    ss << val;
-    return ss.str();
-}
 
 void servers::send_response(int newsockfd, Client &object)
 {
@@ -276,7 +269,7 @@ void servers::send_response(int newsockfd, Client &object)
 		object.set_iswriting(true);
 	}
 
-	std::cout << "\\\\\\ " << object.get_URI() << " " <<  object.get_file_fd()->_file << std::endl;
+	// std::cout << "\\\\\\ " << object.get_URI() << " " <<  object.get_file_fd()->_file << std::endl;
 
 	int r = fread(buffer_res, 1, BSIZE, object.get_file_fd());
 		// std::cout << "has request  : "<< object.get_has_request() << std::endl;

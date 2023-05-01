@@ -101,6 +101,7 @@ int Client::getFirstBodyPart(char *str, size_t size_read)
     {
         std::ofstream requestBody;
         size_t PosChunked = RequestHeaders["Transfer-Encoding"].find("chunked");
+        std::cout<<"URI : "<<URI<<std::endl;
         requestBody.open("bodyRequest" + FileExtension(), std::ios_base::out | std::ios_base::app | std::ios_base::binary);
         std::string ss(str, size_read);
         lenghtHeader = ss.find("\r\n\r\n") + 4;
@@ -114,6 +115,12 @@ int Client::getFirstBodyPart(char *str, size_t size_read)
                 token = body.substr(0, pos);
                 if (isHexadecimal(token))
                 {
+                    if (token == "0")
+                    {
+                        requestBody.close();
+                        set_has_request(true);
+                        return(0);
+                    }
                     body.erase(0, pos + 2);
                     continue;
                 }
@@ -122,6 +129,11 @@ int Client::getFirstBodyPart(char *str, size_t size_read)
             }
         }
         requestBody << body;
+        if ((unsigned int)stringToInt((RequestHeaders["Content-Length"])) == (i - lenghtHeader)){
+            requestBody.close();
+            set_has_request(true);
+            return 0;
+        }
     }
     return 0;
 }
@@ -359,20 +371,23 @@ void Client::HTTP_Request_pars(std::string httpRequest, int size_read, const cha
         }
         if (getFirstBodyPart((char *)str, size_read))
         {
+            isParsed = true;
             return;
         }
         isParsed = true;
     }
-    if (Method == "POST" && size_read)
+    if (Method == "POST" && size_read && isParsed == true)
     {
-        std::cout<<"==========================================heresdfkdfks"<<std::endl;
-        getBody(str, size_read);
+        if (std::string(str).find("\r\n\r\n") == std::string::npos)
+            getBody(str, size_read);
         if (send413Response() == 1)
             return;
+        // std::cout << "=====================body: "<< std::endl;
         if (get_has_request() == true)
         {
             std::cout<<"here"<<std::endl;
             POST_Response();
         }
+        return ;
     }
 }
