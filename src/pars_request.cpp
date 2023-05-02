@@ -76,6 +76,12 @@ int Client::getFirstBodyPart(char *str, size_t size_read)
                 StatusCode = "204 No Content";
                 set_error(true);
                 set_has_request(true);
+                std::cout << "Directory deleted successfully" << std::endl;
+                size_t lastSlash = URI.find_last_of('/');
+                size_t penultimateSlash = URI.find_last_of('/', lastSlash - 1);
+                URI = URI.substr(0, penultimateSlash + 1);
+                std::cout<<"URI : "<<URI<<std::endl;
+                // URI = URI.substr(0, URI.find_last_of("/"));
                 return 0;
             }
         }
@@ -88,6 +94,8 @@ int Client::getFirstBodyPart(char *str, size_t size_read)
                 StatusCode = "204 No Content";
                 set_error(true);
                 set_has_request(true);
+                URI = URI.substr(0, URI.find_last_of("/") + 1);
+                std::cout<<"new URI : " <<URI<<std::endl;
                 return 0;
             }else{
                 std::cout << "Error deleting file." << std::endl;

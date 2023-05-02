@@ -61,6 +61,10 @@ int Client::get_matched_location_for_request_uri()
                     {
                         URI = (itr->second)->getRoot() + find_string(URI, (itr->second)->getRoot());
                         loc = itr->second;
+                        //start check
+                            if ((itr->second)->getRoot().find(URI) != std::string::npos)
+                                std::cout<<"----------------> Found URI : "<< (itr->second)->getRoot()<<std::endl;
+                        //end check
                         std::cout << "----------------> Found : "<< URI << "------>  " << itr->first << std::endl;
                         return (0);
                     }
@@ -191,16 +195,16 @@ int Client::GET_Response()
             }
         }else if (loc->getAutoIndex() == "on")
         {
-            if (loc->getIndex().size() > 0 && access(((URI) + (loc->getIndex())).c_str(), F_OK) != -1){
-                    URI = (URI) + (loc->getIndex());
-                    set_has_request(true);
-                    return(0);
-            }
-            else{
+            // if (loc->getIndex().size() > 0 && access(((URI) + (loc->getIndex())).c_str(), F_OK) != -1){
+            //         URI = (URI) + (loc->getIndex());
+            //         set_has_request(true);
+            //         return(0);
+            // }
+            // else{
                 list_directory((URI).c_str());
                 StatusCode = "200 OK";
                 set_has_request(true);
-            }
+            // }
         }
 
     }

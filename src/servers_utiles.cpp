@@ -6,7 +6,7 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 15:05:19 by mmanouze          #+#    #+#             */
-/*   Updated: 2023/05/01 15:18:21 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/05/02 13:56:13 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ void servers::full_path(Client &object)
 			object.set_URI("ErrorPage/Error409.html");
 		else if (object.get_status() == "200 OK")
 			object.set_URI("ErrorPage/Error200.html");
+		else if (object.get_status() == "204 No Content")
+			object.set_URI("ErrorPage/Error204.html");
 	}
 	std::cout << "URI fih : " << object.get_URI() << std::endl;
 	// else if (object.get_URI() == "/")

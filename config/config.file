@@ -11,64 +11,11 @@ server
     error_page 300 ../errors/500.html
     root /Users/lelbakna/Desktop/webserv_team
     index index.html
-    location /GET_files/test
-    {
-        allow_methods GET POST DELETE
-        redirect http://www.google.com/
-        autoindex on
-        root /Users/lelbakna/Desktop/webserv_team
-        index life.html
-        index lie.html
-        index lfe.html
-        upload_pass /upload
-        cgi_php fullpathofcgiphp
-        cgi_py fullpathofcgipython
-    }
-    location /ErrorPage
-    {
-        allow_methods GET POST DELETE
-        redirect http://www.google.com/ 
-        autoindex on
-        root /Users/lelbakna/Desktop/webserv_team
-        index life.html
-        upload_pass /Users/lelbakna/Desktop/webserv_team/upload
-        cgi_php fullpathofcgiphp
-        cgi_py fullpathofcgipython
-    }
-    location /scripts
-    {
-        allow_methods GET POST DELETE
-        autoindex on 
-        root scripts
-        upload_pass /Users/lelbakna/Desktop/webserv_team/upload
-        index post_script.php
-        cgi_php /Users/lelbakna/Desktop/webserv_team/scripts/php-cgi
-        cgi_py /usr/bin/python
-    }
-    location /GET_files
-    {
-        allow_methods GET POST DELETE
-        autoindex on
-        root GET_files
-        index indedfdfgx.html
-        cgi_php /Users/lelbakna/Desktop/webserv_team/scripts/php-cgi
-        cgi_py /usr/bin/python
-    }
-    location /Users/lelbakna/Desktop/webserv_team
-    {
-        allow_methods GET POST DELETE
-        autoindex on
-        root /Users/lelbakna/Desktop/webserv_team
-        index index.html
-        cgi_php /Users/lelbakna/Desktop/webserv_team/scripts/php-cgi
-        cgi_py /usr/bin/python
-    }
     location /
     {
         allow_methods GET POST DELETE
         autoindex on
-        root /Users/lelbakna
-        index index.html
+        root /Users/lelbakna/Desktop/webserv_team
         cgi_php /Users/lelbakna/Desktop/webserv_team/scripts/php-cgi
         cgi_py /usr/bin/python
     }

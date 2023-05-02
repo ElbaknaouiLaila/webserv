@@ -6,7 +6,7 @@
 /*   By: lelbakna <lelbakna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 13:52:04 by mmanouze          #+#    #+#             */
-/*   Updated: 2023/05/01 19:54:28 by lelbakna         ###   ########.fr       */
+/*   Updated: 2023/05/02 13:35:20 by lelbakna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@ class Client
 		int 			stringToInt(const std::string& str);
 		std::string 	find_extension(std::string filename);
 		void 			cgi_GET_response(std::string filename);
-		std::fstream 			openFile();
+		std::fstream 	openFile();
 		void 			set_html_string(bool set) { htmlString = set; }
 		void 			set_URI(const std::string &set)
 		{
